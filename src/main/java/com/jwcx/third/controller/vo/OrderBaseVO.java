@@ -1,6 +1,7 @@
 package com.jwcx.third.controller.vo;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -82,6 +83,7 @@ public class OrderBaseVO {
     @NotNull(message = "订单金额不得为空")
     private BigDecimal amount;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "下单时间")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private Date orderTime;

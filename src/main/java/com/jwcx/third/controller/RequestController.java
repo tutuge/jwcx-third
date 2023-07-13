@@ -1,5 +1,8 @@
 package com.jwcx.third.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jwcx.third.controller.bo.MyOrderQo;
+import com.jwcx.third.controller.bo.OrderBo;
 import com.jwcx.third.controller.bo.TravelModeQo;
 import com.jwcx.third.controller.vo.*;
 import com.jwcx.third.domain.CommonResult;
@@ -7,7 +10,6 @@ import com.jwcx.third.rest.RequestService;
 import com.jwcx.third.utils.SignUtil;
 import com.jwcx.third.utils.json.JsonUtils;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -130,41 +132,16 @@ public class RequestController {
         String send = url + "getOrderInfo/" + id;
         return requestService.getOrderInfo(send, appId, appSecret, sign, timestamp);
     }
-//
-//    @PermitAll
-//    @PostMapping("/queryOrderList")
-//    @Operation(summary = "获取订单列表")
-//    public CommonResult<Page<OrderBo>> getOrderList(@RequestBody MyOrderQo myOrderQo) {
-//        Page<OrderDO> page = new Page<>(myOrderQo.getPageNum(), myOrderQo.getPageSize());
-//        //勾选的订单状态
-//        boolean orderStatusQueryArg = myOrderQo.getOrderStatus() != null && myOrderQo.getOrderStatus().size() > 0;
-//        Long thirdId = RequestHeaderUtil.getThirdId();
-//        LambdaQueryWrapper<OrderDO> queryWrapper = Wrappers.lambdaQuery(OrderDO.class)
-//                .eq(OrderDO::getThird, thirdId)
-//                .and(StringUtils.isNotBlank(myOrderQo.getPassenger()),
-//                        wrapper -> wrapper.like(OrderDO::getPassengerName, myOrderQo.getPassenger()).
-//                                or().like(OrderDO::getPassengerPhone, myOrderQo.getPassenger()))
-//                .in(orderStatusQueryArg, OrderDO::getOrderStatus, myOrderQo.getOrderStatus())
-//                .ge(myOrderQo.getLowPrice() != null, OrderDO::getAmount, myOrderQo.getLowPrice())
-//                .le(myOrderQo.getHighPrice() != null, OrderDO::getAmount, myOrderQo.getHighPrice())
-//                .orderBy(true, false, OrderDO::getCreateTime);
-//        Page<OrderDO> orderDOPage = orderService.page(page, queryWrapper);
-//        Page<OrderBo> orderBoPage = new Page<>();
-//        orderBoPage.setPages(orderDOPage.getPages());
-//        orderBoPage.setCurrent(orderDOPage.getCurrent());
-//        orderBoPage.setTotal(orderDOPage.getTotal());
-//        orderBoPage.setSize(orderDOPage.getSize());
-//        List<OrderBo> list = new ArrayList<>();
-//        for (OrderDO orderDO : orderDOPage.getRecords()) {
-//            OrderBo orderBo = new OrderBo();
-//            BeanUtils.copyProperties(orderDO, orderBo);
-//            orderBo.setMobile(orderDO.getPassengerPhone());
-//            orderBo.setAvatar(orderDO.getPicUrl());
-//            orderBo.setNickname(orderDO.getPassengerName());
-//            list.add(orderBo);
-//        }
-//        orderBoPage.setRecords(list);
-//        return CommonResult.success(orderBoPage);
-//    }
+
+
+    @PostMapping("/queryOrderList")
+    @Operation(summary = "获取订单列表")
+    public CommonResult<Page<OrderBo>> getOrderList(@RequestBody MyOrderQo myOrderQo) {
+        long l = System.currentTimeMillis();
+        String timestamp = String.valueOf(l);
+        String sign = SignUtil.sign(appId, appSecret, timestamp, JsonUtils.toJsonString(myOrderQo), null, null);
+        String send = url + "queryOrderList";
+        return requestService.queryOrderList(send, appId, appSecret, sign, timestamp, myOrderQo);
+    }
 
 }

@@ -1,9 +1,12 @@
 package com.jwcx.third.rest;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dtflys.forest.annotation.Get;
 import com.dtflys.forest.annotation.JSONBody;
 import com.dtflys.forest.annotation.Post;
 import com.dtflys.forest.annotation.Var;
+import com.jwcx.third.controller.bo.MyOrderQo;
+import com.jwcx.third.controller.bo.OrderBo;
 import com.jwcx.third.controller.bo.TravelModeQo;
 import com.jwcx.third.controller.vo.*;
 import com.jwcx.third.domain.CommonResult;
@@ -106,4 +109,19 @@ public interface RequestService {
                                            @Var("appSecret") String appSecret,
                                            @Var("sign") String sign,
                                            @Var("timestamp") String timestamp);
+
+
+    @Post(url = "${url}", headers = {
+            "Content-Type: application/json",
+            "app_id: ${appId}",
+            "app_secret: ${appSecret}",
+            "sign: ${sign}",
+            "timestamp: ${timestamp}",
+    })
+    CommonResult<Page<OrderBo>> queryOrderList(@Var("url") String url,
+                                               @Var("appId") String appId,
+                                               @Var("appSecret") String appSecret,
+                                               @Var("sign") String sign,
+                                               @Var("timestamp") String timestamp,
+                                               @JSONBody MyOrderQo myOrderQo);
 }

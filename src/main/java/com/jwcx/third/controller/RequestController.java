@@ -78,7 +78,7 @@ public class RequestController {
 
 
     /**
-     * 取消信息
+     * 第三方取消订单
      *
      * @param cancelOrderVo 订单取消信息
      * @return 取消是否成功
@@ -99,7 +99,7 @@ public class RequestController {
      * 根据订单id获取司机位置
      */
     @GetMapping("/getDriverLocation/{id}")
-    @Operation(summary = "第三方取消订单")
+    @Operation(summary = "根据订单id获取司机位置")
     public CommonResult<?> getDriverLocation(@PathVariable("id") Long id) {
         long l = System.currentTimeMillis();
         String timestamp = String.valueOf(l);
@@ -109,6 +109,12 @@ public class RequestController {
         return requestService.getDriverLocation(send, appId, appSecret, sign, timestamp);
     }
 
+    /**
+     * 根据id查询订单匹配状态
+     *
+     * @param id 订单id
+     * @return 匹配状态
+     */
     @PermitAll
     @GetMapping("/queryOrderMatchStatus/{id}")
     @Operation(summary = "主动查询订单的匹配状态")
@@ -122,6 +128,12 @@ public class RequestController {
     }
 
 
+    /**
+     * 根据订单id获得详情
+     *
+     * @param id 订单id
+     * @return 详情
+     */
     @GetMapping("/getOrderInfo/{id}")
     @Operation(summary = "获取订单详情")
     public CommonResult<OrderInfoVo> getOrderInfo(@PathVariable("id") Long id) {
@@ -134,6 +146,12 @@ public class RequestController {
     }
 
 
+    /**
+     * 查询订单列表
+     *
+     * @param myOrderQo 查询参数
+     * @return 订单列表
+     */
     @PostMapping("/queryOrderList")
     @Operation(summary = "获取订单列表")
     public CommonResult<Page<OrderBo>> getOrderList(@RequestBody MyOrderQo myOrderQo) {

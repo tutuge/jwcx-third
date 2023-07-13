@@ -4,6 +4,8 @@ import com.dtflys.forest.annotation.JSONBody;
 import com.dtflys.forest.annotation.Post;
 import com.dtflys.forest.annotation.Var;
 import com.jwcx.third.controller.bo.TravelModeQo;
+import com.jwcx.third.controller.vo.CancelOrderVo;
+import com.jwcx.third.controller.vo.OrderCreateReqVO;
 import com.jwcx.third.controller.vo.TravelModeApiVo;
 import com.jwcx.third.domain.CommonResult;
 
@@ -17,7 +19,7 @@ import java.util.List;
 public interface RequestService {
 
     /**
-     * 司机提现
+     * 根据经纬度获得出行方式
      *
      * @param url          发送的地址
      * @param travelModeQo 发送的值
@@ -36,4 +38,34 @@ public interface RequestService {
                                                             @Var("sign") String sign,
                                                             @Var("timestamp") String timestamp,
                                                             @JSONBody TravelModeQo travelModeQo);
+
+
+    @Post(url = "${url}", headers = {
+            "Content-Type: application/json",
+            "app_id: ${appId}",
+            "app_secret: ${appSecret}",
+            "sign: ${sign}",
+            "timestamp: ${timestamp}",
+    })
+    CommonResult<?> createMemberOrder(@Var("url") String url,
+                                      @Var("appId") String appId,
+                                      @Var("appSecret") String appSecret,
+                                      @Var("sign") String sign,
+                                      @Var("timestamp") String timestamp,
+                                      @JSONBody OrderCreateReqVO orderCreate);
+
+
+    @Post(url = "${url}", headers = {
+            "Content-Type: application/json",
+            "app_id: ${appId}",
+            "app_secret: ${appSecret}",
+            "sign: ${sign}",
+            "timestamp: ${timestamp}",
+    })
+    CommonResult<Boolean> cancelOrderMem(@Var("url") String url,
+                                         @Var("appId") String appId,
+                                         @Var("appSecret") String appSecret,
+                                         @Var("sign") String sign,
+                                         @Var("timestamp") String timestamp,
+                                         @JSONBody CancelOrderVo cancelOrderVo);
 }

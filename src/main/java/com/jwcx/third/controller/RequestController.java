@@ -1,9 +1,14 @@
 package com.jwcx.third.controller;
 
 import com.jwcx.third.controller.bo.TravelModeQo;
+import com.jwcx.third.controller.vo.CancelOrderVo;
+import com.jwcx.third.controller.vo.OrderCreateReqVO;
+import com.jwcx.third.controller.vo.TravelModeApiVo;
+import com.jwcx.third.domain.CommonResult;
 import com.jwcx.third.rest.RequestService;
 import com.jwcx.third.utils.SignUtil;
 import com.jwcx.third.utils.json.JsonUtils;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * 请求示例
@@ -40,49 +47,54 @@ public class RequestController {
      * @return 查询结果
      */
     @PostMapping("/getTravelMode")
-    public void getTravelModeByUser(@RequestBody @Validated TravelModeQo travelModeQo) {
+    public CommonResult<List<TravelModeApiVo>> getTravelModeByUser(@RequestBody @Validated TravelModeQo travelModeQo) {
         String send = url + "getTravelMode";
         long l = System.currentTimeMillis();
         String timestamp = String.valueOf(l);
         String sign = SignUtil.sign(appId, appSecret, timestamp, JsonUtils.toJsonString(travelModeQo), null, null);
-        requestService.getTravelModeByUser(send, appId, appSecret, sign, timestamp, travelModeQo);
+        CommonResult<List<TravelModeApiVo>> travelModeByUser = requestService.getTravelModeByUser(send, appId, appSecret, sign, timestamp, travelModeQo);
+        return travelModeByUser;
     }
 
 
-//    /**
-//     * 第三方代客下单至少需要20秒才能下一个新的
-//     *
-//     * @param orderCreate 订单创建信息
-//     * @return 创建是否成功
-//     */
-//    @PermitAll
-//    @Idempotent(timeout = 20)
-//    @PostMapping("/createMemberOrder")
-//    @Operation(summary = "调度端代客下单")
-//    public CommonResult<?> createMemberOrder(@Valid @RequestBody OrderCreateReqVO orderCreate) {
-//        orderCreate.setThird(true);
-//        CommonResult<?> orderMem = memberOrderApi.createOrderMem(orderCreate);
-//        orderMem.checkError();
-//        return success();
-//    }
-//
-//
-//    /**
-//     * 第三方代客下单至少需要20秒才能下一个新的
-//     *
-//     * @param cancelOrderVo 订单取消信息
-//     * @return 取消是否成功
-//     */
-//    @PermitAll
-//    @Idempotent(timeout = 20)
-//    @PostMapping("/cancelMemberOrder")
-//    @Operation(summary = "第三方取消订单")
-//    public CommonResult<?> cancelMemberOrder(@Valid @RequestBody CancelOrderVo cancelOrderVo) {
-//        cancelOrderVo.setThird(true);
-//        CommonResult<Boolean> booleanCommonResult = memberOrderApi.cancelOrderMem(cancelOrderVo);
-//        booleanCommonResult.checkError();
-//        return success();
-//    }
+    /**
+     * 下单
+     *
+     * @param orderCreate 订单创建信息
+     * @return 创建是否成功
+     */
+    @PostMapping("/createMemberOrder")
+    @Operation(summary = "下单")
+    public CommonResult<?> createMemberOrder(@Valid @RequestBody OrderCreateReqVO orderCreate) {
+        orderCreate.setThird(true);
+        //第三方默认都是现金结算
+        orderCreate.setCash(true);
+        long l = System.currentTimeMillis();
+        String timestamp = String.valueOf(l);
+        String sign = SignUtil.sign(appId, appSecret, timestamp, JsonUtils.toJsonString(orderCreate), null, null);
+        String send = url + "createMemberOrder";
+        CommonResult<?> memberOrder = requestService.createMemberOrder(send, appId, appSecret, sign, timestamp, orderCreate);
+        return memberOrder;
+    }
+
+
+    /**
+     * 取消信息
+     *
+     * @param cancelOrderVo 订单取消信息
+     * @return 取消是否成功
+     */
+    @PostMapping("/cancelMemberOrder")
+    @Operation(summary = "第三方取消订单")
+    public CommonResult<Boolean> cancelMemberOrder(@Valid @RequestBody CancelOrderVo cancelOrderVo) {
+        cancelOrderVo.setThird(true);
+        long l = System.currentTimeMillis();
+        String timestamp = String.valueOf(l);
+        String sign = SignUtil.sign(appId, appSecret, timestamp, JsonUtils.toJsonString(cancelOrderVo), null, null);
+        String send = url + "cancelMemberOrder";
+        CommonResult<Boolean> booleanCommonResult = requestService.cancelOrderMem(send, appId, appSecret, sign, timestamp, cancelOrderVo);
+        return booleanCommonResult;
+    }
 //
 //    /**
 //     * 根据订单id获取司机位置

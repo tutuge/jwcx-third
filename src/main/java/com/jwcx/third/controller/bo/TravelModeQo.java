@@ -1,5 +1,6 @@
 package com.jwcx.third.controller.bo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -47,6 +48,7 @@ public class TravelModeQo implements Serializable {
     @Schema(description = "预估时间")
     private BigDecimal estimatedTime;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "用车时间")
     private Date useTime;
 

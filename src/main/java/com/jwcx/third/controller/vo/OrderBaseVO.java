@@ -100,6 +100,7 @@ public class OrderBaseVO {
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private Date paymentTime;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "预约时间")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private Date appointmentTime;
@@ -143,5 +144,4 @@ public class OrderBaseVO {
 
     @Schema(description = "司机码")
     private Integer driverCode;
-
 }

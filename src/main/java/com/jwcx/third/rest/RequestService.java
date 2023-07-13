@@ -1,12 +1,11 @@
 package com.jwcx.third.rest;
 
+import com.dtflys.forest.annotation.Get;
 import com.dtflys.forest.annotation.JSONBody;
 import com.dtflys.forest.annotation.Post;
 import com.dtflys.forest.annotation.Var;
 import com.jwcx.third.controller.bo.TravelModeQo;
-import com.jwcx.third.controller.vo.CancelOrderVo;
-import com.jwcx.third.controller.vo.OrderCreateReqVO;
-import com.jwcx.third.controller.vo.TravelModeApiVo;
+import com.jwcx.third.controller.vo.*;
 import com.jwcx.third.domain.CommonResult;
 
 import java.util.List;
@@ -68,4 +67,43 @@ public interface RequestService {
                                          @Var("sign") String sign,
                                          @Var("timestamp") String timestamp,
                                          @JSONBody CancelOrderVo cancelOrderVo);
+
+    @Get(url = "${url}", headers = {
+            "Content-Type: application/json",
+            "app_id: ${appId}",
+            "app_secret: ${appSecret}",
+            "sign: ${sign}",
+            "timestamp: ${timestamp}",
+    })
+    CommonResult<?> getDriverLocation(@Var("url") String url,
+                                      @Var("appId") String appId,
+                                      @Var("appSecret") String appSecret,
+                                      @Var("sign") String sign,
+                                      @Var("timestamp") String timestamp);
+
+    @Get(url = "${url}", headers = {
+            "Content-Type: application/json",
+            "app_id: ${appId}",
+            "app_secret: ${appSecret}",
+            "sign: ${sign}",
+            "timestamp: ${timestamp}",
+    })
+    CommonResult<OrderMatchStatusVo> queryOrderMatchStatus(@Var("url") String url,
+                                                           @Var("appId") String appId,
+                                                           @Var("appSecret") String appSecret,
+                                                           @Var("sign") String sign,
+                                                           @Var("timestamp") String timestamp);
+
+    @Get(url = "${url}", headers = {
+            "Content-Type: application/json",
+            "app_id: ${appId}",
+            "app_secret: ${appSecret}",
+            "sign: ${sign}",
+            "timestamp: ${timestamp}",
+    })
+    CommonResult<OrderInfoVo> getOrderInfo(@Var("url") String url,
+                                           @Var("appId") String appId,
+                                           @Var("appSecret") String appSecret,
+                                           @Var("sign") String sign,
+                                           @Var("timestamp") String timestamp);
 }

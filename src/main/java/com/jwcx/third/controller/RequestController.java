@@ -1,22 +1,19 @@
 package com.jwcx.third.controller;
 
 import com.jwcx.third.controller.bo.TravelModeQo;
-import com.jwcx.third.controller.vo.CancelOrderVo;
-import com.jwcx.third.controller.vo.OrderCreateReqVO;
-import com.jwcx.third.controller.vo.TravelModeApiVo;
+import com.jwcx.third.controller.vo.*;
 import com.jwcx.third.domain.CommonResult;
 import com.jwcx.third.rest.RequestService;
 import com.jwcx.third.utils.SignUtil;
 import com.jwcx.third.utils.json.JsonUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -95,68 +92,44 @@ public class RequestController {
         CommonResult<Boolean> booleanCommonResult = requestService.cancelOrderMem(send, appId, appSecret, sign, timestamp, cancelOrderVo);
         return booleanCommonResult;
     }
-//
-//    /**
-//     * 根据订单id获取司机位置
-//     */
-//    @PermitAll
-//    @GetMapping("/getDriverLocation/{id}")
-//    @Operation(summary = "第三方取消订单")
-//    public CommonResult<?> getDriverLocation(@PathVariable("id") Long id) {
-//        Long thirdId = RequestHeaderUtil.getThirdId();
-//        OrderDO byId = orderService.getById(id, thirdId);
-//        if (ObjUtil.isNotNull(byId)) {
-//            Long driverId = byId.getDriverId();
-//            String tempKey = WS_SET_ALL_POINT_KEY + DRIVER.getValue() + ":" + driverId;
-//            //前纬后经
-//            LocationBo o = RedisUtils.getCacheObject(tempKey);
-//            return success(o);
-//        } else {
-//            throw new RuntimeException("未找到对应的司机");
-//        }
-//    }
-//
-//    @PermitAll
-//    @GetMapping("/queryOrderMatchStatus/{id}")
-//    @Operation(summary = "主动查询订单的匹配状态")
-//    public CommonResult<OrderMatchStatusVo> queryOrderMatchStatus(@PathVariable("id") Long id) {
-//        OrderMatchStatusVo orderMatchStatusVo = new OrderMatchStatusVo();
-//        Long thirdId = RequestHeaderUtil.getThirdId();
-//        OrderDO orderDO = orderService.getById(id, thirdId);
-//        if (orderDO.getOrderStatus() == 1) {
-//            orderMatchStatusVo.setStatus("0");
-//        } else {
-//            orderMatchStatusVo.setStatus("1");
-//        }
-//        Date transferTime = orderDO.getTransferTime();
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        if (transferTime != null) {
-//            orderMatchStatusVo.setMatchTime(simpleDateFormat.format(transferTime));
-//        }
-//        //获取司机信息
-//        Long driverId = orderDO.getDriverId();
-//        DriverDO driverDO = driverService.getById(driverId);
-//        DriverInfoVo driverInfoVo = new DriverInfoVo();
-//        BeanUtils.copyProperties(driverDO, driverInfoVo);
-//        orderMatchStatusVo.setDriverInfoVo(driverInfoVo);
-//        return CommonResult.success(orderMatchStatusVo);
-//    }
-//
-//    @PermitAll
-//    @GetMapping("/getOrderInfo/{id}")
-//    @Operation(summary = "获取订单详情")
-//    public CommonResult<OrderInfoVo> getOrderInfo(@PathVariable("id") Long id) {
-//        OrderInfoVo orderInfoVo = new OrderInfoVo();
-//        Long thirdId = RequestHeaderUtil.getThirdId();
-//        OrderDO orderDO = orderService.getById(id, thirdId);
-//        BeanUtils.copyProperties(orderDO, orderInfoVo);
-//        Long driverId = orderDO.getDriverId();
-//        DriverDO driverDO = driverService.getById(driverId);
-//        DriverInfoVo driverInfoVo = new DriverInfoVo();
-//        BeanUtils.copyProperties(driverDO, driverInfoVo);
-//        orderInfoVo.setDriverVo(driverInfoVo);
-//        return CommonResult.success(orderInfoVo);
-//    }
+
+    /**
+     * 根据订单id获取司机位置
+     */
+    @GetMapping("/getDriverLocation/{id}")
+    @Operation(summary = "第三方取消订单")
+    public CommonResult<?> getDriverLocation(@PathVariable("id") Long id) {
+        long l = System.currentTimeMillis();
+        String timestamp = String.valueOf(l);
+        String[] strings = {String.valueOf(id)};
+        String sign = SignUtil.sign(appId, appSecret, timestamp, null, null, strings);
+        String send = url + "getDriverLocation/" + id;
+        return requestService.getDriverLocation(send, appId, appSecret, sign, timestamp);
+    }
+
+    @PermitAll
+    @GetMapping("/queryOrderMatchStatus/{id}")
+    @Operation(summary = "主动查询订单的匹配状态")
+    public CommonResult<OrderMatchStatusVo> queryOrderMatchStatus(@PathVariable("id") Long id) {
+        long l = System.currentTimeMillis();
+        String timestamp = String.valueOf(l);
+        String[] strings = {String.valueOf(id)};
+        String sign = SignUtil.sign(appId, appSecret, timestamp, null, null, strings);
+        String send = url + "queryOrderMatchStatus/" + id;
+        return requestService.queryOrderMatchStatus(send, appId, appSecret, sign, timestamp);
+    }
+
+
+    @GetMapping("/getOrderInfo/{id}")
+    @Operation(summary = "获取订单详情")
+    public CommonResult<OrderInfoVo> getOrderInfo(@PathVariable("id") Long id) {
+        long l = System.currentTimeMillis();
+        String timestamp = String.valueOf(l);
+        String[] strings = {String.valueOf(id)};
+        String sign = SignUtil.sign(appId, appSecret, timestamp, null, null, strings);
+        String send = url + "getOrderInfo/" + id;
+        return requestService.getOrderInfo(send, appId, appSecret, sign, timestamp);
+    }
 //
 //    @PermitAll
 //    @PostMapping("/queryOrderList")

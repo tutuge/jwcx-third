@@ -73,6 +73,7 @@ public class RequestController {
         String sign = SignUtil.sign(appId, appSecret, timestamp, JsonUtils.toJsonString(orderCreate), null, null);
         String send = url + "createMemberOrder";
         CommonResult<?> memberOrder = requestService.createMemberOrder(send, appId, appSecret, sign, timestamp, orderCreate);
+        memberOrder.checkError();
         return memberOrder;
     }
 

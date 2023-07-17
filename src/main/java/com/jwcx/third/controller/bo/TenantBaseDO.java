@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 拓展多调度端的 BaseDO 基类
  *
- * @author 芋道源码
+ * @author 
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

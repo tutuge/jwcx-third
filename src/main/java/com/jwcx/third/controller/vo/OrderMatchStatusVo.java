@@ -7,8 +7,16 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * 订单状态发生变化的回调
+ *
+ * @author wangbin
+ */
 @Data
 public class OrderMatchStatusVo {
+
+    @Schema(description = "订单id")
+    private Long orderId;
 
     @Schema(description = "订单匹配状态，0：未匹配，1：已匹配")
     private Integer status;

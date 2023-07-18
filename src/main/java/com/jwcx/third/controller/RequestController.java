@@ -10,6 +10,7 @@ import com.jwcx.third.rest.RequestService;
 import com.jwcx.third.utils.SignUtil;
 import com.jwcx.third.utils.json.JsonUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.util.List;
  *
  * @author wangbin
  */
+@Slf4j
 @RestController
 @RequestMapping("/third")
 public class RequestController {
@@ -126,6 +128,14 @@ public class RequestController {
         String sign = SignUtil.sign(appId, appSecret, timestamp, null, null, strings);
         String send = url + "queryOrderMatchStatus/" + id;
         return requestService.queryOrderMatchStatus(send, appId, appSecret, sign, timestamp);
+    }
+
+    @PermitAll
+    @PostMapping("/orderStatusChange")
+    @Operation(summary = "订单匹配状态回调")
+    public void orderStatusChange(@RequestBody OrderMatchStatusVo vo) {
+
+        log.info("当前订单状态发生变动-->{}", vo);
     }
 
 

@@ -30,4 +30,7 @@ third:
   appSecret: 38b4cb8537d7d84446a4ca0297beb9d84da2e6516346d87245f5d20513789af4
   # 注意 url必须以http或者https开头，否则使用的这个第三方库会自动在前面加一个localhost
 #  url: 'http://localhost:48080/app-api/third/order/'
-  url: 'https://a.v3.rd.jwcab.com/prod-api/app-api/third/order/'
+  url: 'https://s.v3.rd.jwcab.com/prod-api/app-api/third/order/'
+
+server:
+  port: 8081

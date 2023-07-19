@@ -134,7 +134,6 @@ public class RequestController {
     @PostMapping("/orderStatusChange")
     @Operation(summary = "订单匹配状态回调")
     public void orderStatusChange(@RequestBody OrderMatchStatusVo vo) {
-
         log.info("当前订单状态发生变动-->{}", vo);
     }
 
